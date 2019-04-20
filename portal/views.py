@@ -1,10 +1,34 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.contrib.auth import login as auth_login   #as it clashes with other login term
-from .forms import *  
+from .forms  import Complaint_form
+from django.shortcuts import redirect
+from .models import *
 
 def home(request):
-    context = {}
+    complaint = Complaint.objects.all()
+    print(complaint)
+    context = {
+        'complaint': complaint
+    } 
     return render(request, 'portal/home.html', context)
+
+
+
+def post(request):
+    if request.method == 'POST':
+        form = Complaint_form(request.POST)
+        if form.is_valid() :
+            a = form.save(commit=False)
+            a.author = request.user
+            a.save()
+            return redirect('home')
+    else:
+        form = Complaint_form()
+
+    context = {
+        'form': form,
+    }
+    return render(request, 'portal/post.html', context)
+
+
+
