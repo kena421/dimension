@@ -6,9 +6,11 @@ from .models import *
 
 def home(request):
     complaint = Complaint.objects.all()
-    print(complaint)
+    comments = Comment.objects.all()
+    print(complaint[0])
     context = {
-        'complaint': complaint
+        'complaint': complaint,
+        'comments' : comments,
     } 
     return render(request, 'portal/home.html', context)
 
